@@ -23,15 +23,15 @@ export default {
   data: () => ({
     page: 1,
     items: [],
-    loading: false
+    loading: false,
+    itemsCount: 200
   }),
   created() {
-    console.log("created", this.page);
     axios
       .get(`https://jsonplaceholder.typicode.com/albums/${this.page}/photos`)
       .then(res => res.data)
       .then(data => {
-        this.items = data;
+        this.items.push(...data);
       })
       .catch(err => console.log(err));
   },
@@ -41,8 +41,10 @@ export default {
     const elementWatcher = scrollMonitor.create(myElement);
 
     elementWatcher.enterViewport(function() {
-      self.page++;
-      self.appendItems();
+      if (self.items.length < self.itemsCount) {
+        self.page++;
+        self.appendItems();
+      }
     });
   },
   methods: {
